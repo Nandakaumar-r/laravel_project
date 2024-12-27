@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Add these styles to your main stylesheet or in-line styles */
+/* Animations for the dashboard */
+
+/* Fade In */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Scale Up */
+@keyframes scaleUp {
+    from {
+        transform: scale(0.95);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+/* Card Animation */
+.card-animate {
+    animation: fadeIn 0.6s ease-out, scaleUp 0.6s ease-out;
+}
+
+/* Chart Container Animation */
+.chart-animate {
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* Hover Effects */
+.card:hover {
+    animation: scaleUp 0.4s ease-out forwards;
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Chart Animation */
+@media (max-width: 768px) {
+    .chart-animate {
+        animation: fadeIn 1s ease-in;
+    }
+}
