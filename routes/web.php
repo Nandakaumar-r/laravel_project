@@ -83,6 +83,9 @@ Route::prefix('admin')->group(function () {
     Route::get('/notify-email', function () {
         return Inertia::render('Dashboard/NotificationConfig');
     });
+    Route::get('/export-tickets', function () {
+        return Inertia::render('Dashboard/ExportTickets');
+    });
     Route::get('/profile', function () {
         return Inertia::render('Dashboard/AdminProfile');
     });

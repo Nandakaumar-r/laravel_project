@@ -45,7 +45,7 @@ export default function ViewTicketForm() {
         setError(data.message || "Ticket not found.");
       }
     } catch (error) {
-      setError("An error occurred while fetching the ticket details.");
+      setError("No ticket found with the provided track ID and email.");
     } finally {
       setLoading(false); // Set loading to false after API call ends
     }

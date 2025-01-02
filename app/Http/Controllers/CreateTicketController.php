@@ -102,30 +102,30 @@ class CreateTicketController extends Controller
             'read' => '0',
         ]);
         //Prepare ticket details for email notifications
-        // $emplyeeDetails = [
-        //     'name' => $validatedData['name'], // User's name
-        //     'track_id' => $ticket->trackid,
-        //     'track_url' => url("/ticket-details?trackid={$ticket->trackid}&email={$validatedData['email']}"),
-        //     'site_title' => config('app.name'),
-        //     'site_url' => config('app.url'),
-        // ];
+        $emplyeeDetails = [
+            'name' => $validatedData['name'], // User's name
+            'track_id' => $ticket->trackid,
+            'track_url' => url("/ticket-details?trackid={$ticket->trackid}&email={$validatedData['email']}"),
+            'site_title' => config('app.name'),
+            'site_url' => config('app.url'),
+        ];
 
-        // //Email to user
-        // Mail::to($validatedData['email'])->send(new TicketCreatedMail($emplyeeDetails));
+        //Email to user
+        Mail::to($validatedData['email'])->send(new TicketCreatedMail($emplyeeDetails));
 
-        // $ticketDetails = [
-        //     'name' => $validatedData['name'], // User's name
-        //     'message' => $ticket->message,
-        //     'track_id' => $ticket->trackid,
-        //     'track_url' => url("/admin/tickets/{$ticket->id}"),
-        //     'site_title' => config('app.name'),
-        //     'site_url' => config('app.url'),
-        // ];
-        // // Email to assigned owner
-        // $ticketDetails['recipient'] = $assignedUser->name; // Add assigned user's name for email personalization
-        // $ticketDetails['role'] = 'Assigned User'; // Include role information for clarity in the email
+        $ticketDetails = [
+            'name' => $validatedData['name'], // User's name
+            'message' => $ticket->message,
+            'track_id' => $ticket->trackid,
+            'track_url' => url("/admin/tickets/{$ticket->id}"),
+            'site_title' => config('app.name'),
+            'site_url' => config('app.url'),
+        ];
+        // Email to assigned owner
+        $ticketDetails['recipient'] = $assignedUser->name; // Add assigned user's name for email personalization
+        $ticketDetails['role'] = 'Assigned User'; // Include role information for clarity in the email
 
-        // Mail::to($assignedUser->email)->send(new TicketCreatedMail($ticketDetails)); // Use a dedicated Mailable for assignment
+        Mail::to($assignedUser->email)->send(new TicketCreatedMail($ticketDetails)); // Use a dedicated Mailable for assignment
 
         return response()->json([
             'success' => true,

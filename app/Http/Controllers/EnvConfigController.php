@@ -67,7 +67,7 @@ class EnvConfigController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */ public function updateDbConfig(Request $request)
-     {
+    {
         // Validate incoming data
         $validatedData = $request->validate([
             'db_host' => 'nullable|string',
@@ -92,7 +92,7 @@ class EnvConfigController extends Controller
             $this->updateEnvFile('APP_NAME', $validatedData['app_name']);
 
             // Optionally, clear cache after updating the .env file
-           // Artisan::call('config:clear');
+            // Artisan::call('config:clear');
 
             return response()->json([
                 'success' => true,

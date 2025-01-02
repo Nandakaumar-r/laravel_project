@@ -18,6 +18,7 @@ import IncidentTickets from './Pages/Dashboard/IncidentTickets';
 import SmtpConfig from './Pages/Dashboard/SmtpConfig';
 import DbConfig from './Pages/Dashboard/DbConfig';
 import NotificationConfig from './Pages/Dashboard/NotificationConfig';
+import ExportTickets from './Pages/Dashboard/ExportTickets';
 import AdminTicketDetails from './Pages/Dashboard/AdminTicketDetails';
 import AdminProfile from './Pages/Dashboard/AdminProfile';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -44,6 +45,7 @@ function App() {
         <Route path="/admin/smtp-config" element={<SmtpConfig />} />
         <Route path="/admin/db-config" element={<DbConfig />} />
         <Route path="/admin/notify-email" element={<NotificationConfig />} />
+        <Route path="/admin/export-tickets" element={<ExportTickets />} />
         <Route path="/admin/profile" element={<AdminProfile />} />
       </Routes>
     </Router>

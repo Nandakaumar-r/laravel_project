@@ -9,7 +9,7 @@ use App\Models\CreateTicket;
 class RequestTicketController extends Controller
 {
     // Fetch only "Submit a Request" tickets
-    public function getRequestTickets()
+    public function getRequestTickets(Request $request)
     {
         // Dynamically fetch the category ID for "Submit a Request"
         $categoryId = DB::table('hesk_categories')
@@ -23,19 +23,28 @@ class RequestTicketController extends Controller
             ], 404);
         }
 
+        $searchTerm = $request->input('search');
         // Fetch tickets associated with the retrieved category ID
-        $tickets = CreateTicket::where('category', $categoryId)->get();
+        $query = CreateTicket::where('category', $categoryId);
+        if ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('trackid', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('email', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+        $tickets = $query->paginate(10);
 
         if ($tickets->isEmpty()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Not tickets found',
+                'tickets' => $tickets,
             ], 200);
         }
 
         return response()->json([
             'success' => true,
-            'data' => $tickets,
+            'tickets' => $tickets,
         ], 200);
     }
 }

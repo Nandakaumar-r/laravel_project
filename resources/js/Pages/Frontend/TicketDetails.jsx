@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { FaPaperclip } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 export default function TicketDetails() {
     const location = useLocation();
     const ticket = location.state?.ticket || {};
-    console.log(ticket);
+    // console.log(ticket);
     const replies = location.state?.replies || []; // Accessing replies
     // State for owner name
+    const [message, setMessage] = useState("");
     const [ownerName, setOwnerName] = useState("");
+    const [error, setError] = useState(false);
+
 
     // Fetch Owner Name from API
     useEffect(() => {
@@ -70,6 +74,41 @@ export default function TicketDetails() {
         2: { label: "High", color: "bg-yellow-500" },
     };
 
+    const handleReplySubmit = async (e) => {
+        // e.preventDefault();
+
+        const response = await fetch(
+            `http://localhost:8000/api/update-ticket/${ticket.trackid}/${ticket.email}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ message }),
+            }
+        );
+
+        const data = await response.json();
+        if (data.success) {
+            // Show success popup
+            Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Reply submitted successfully!",
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                timer: 3000,
+                text: "Failed to update SMTP configuration.",
+            });
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Header */}
@@ -111,9 +150,8 @@ export default function TicketDetails() {
                             <strong>Priority:</strong>{" "}
                             {priorityMap[ticket.priority] ? (
                                 <span
-                                    className={`${
-                                        priorityMap[ticket.priority].color
-                                    } text-white px-2 py-1 rounded`}
+                                    className={`${priorityMap[ticket.priority].color
+                                        } text-white px-2 py-1 rounded`}
                                 >
                                     {priorityMap[ticket.priority].label}
                                 </span>
@@ -126,9 +164,8 @@ export default function TicketDetails() {
                             <strong>Status:</strong>{" "}
                             {statusMap[ticket.status] ? (
                                 <span
-                                    className={`${
-                                        statusMap[ticket.status].color
-                                    } text-white px-2 py-1 rounded`}
+                                    className={`${statusMap[ticket.status].color
+                                        } text-white px-2 py-1 rounded`}
                                 >
                                     {statusMap[ticket.status].label}
                                 </span>
@@ -189,7 +226,17 @@ export default function TicketDetails() {
                         className="w-full p-4 border rounded-lg focus:ring-2 focus:ring-[#f8703c] outline-none text-sm"
                         rows="5"
                         placeholder="Type your reply here..."
+                        value={message}
+                        onChange={(e) => {
+                            setMessage(e.target.value);
+                            setError(false);
+                        }}
                     ></textarea>
+                    {error && (
+                        <p className="text-red-500 text-sm mt-2">
+                            Please enter a message before submitting.
+                        </p>
+                    )}
 
                     {/* Attachment */}
                     <div className="mt-4 flex items-center gap-4">
@@ -205,7 +252,19 @@ export default function TicketDetails() {
 
                     {/* Buttons */}
                     <div className="flex flex-col sm:flex-row gap-4 mt-6">
-                        <button className="w-full sm:w-auto px-6 py-2 bg-[#f8703c] text-white font-medium rounded-md hover:bg-[#e0612d] transition duration-300">
+                        <button
+                            className="w-full sm:w-auto px-6 py-2 bg-[#f8703c] text-white font-medium rounded-md hover:bg-[#e0612d] transition duration-300"
+                            onClick={() => {
+                                if (!message.trim()) {
+                                    setError(true);
+                                } else {
+                                    console.log("Submit Reply: ", message);
+                                    handleReplySubmit();
+                                    setMessage("");
+                                    setError(false);
+                                }
+                            }}
+                        >
                             Submit Reply
                         </button>
                         <button className="w-full sm:w-auto px-6 py-2 bg-gray-600 text-white font-medium rounded-md hover:bg-gray-700 transition duration-300">

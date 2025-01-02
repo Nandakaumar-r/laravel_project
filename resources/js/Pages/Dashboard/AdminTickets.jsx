@@ -48,7 +48,6 @@ export default function AdminTickets() {
                 const response = await fetch(
                     `http://127.0.0.1:8000/api/admin/tickets?page=${currentPage}&perPage=${perPage}&search=${searchTerm}`
                 );
-                console.log(response);
                 if (!response.ok) {
                     throw new Error("Failed to fetch tickets");
                 }

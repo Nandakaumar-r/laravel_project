@@ -19,7 +19,7 @@ function Layout({ children }) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [userName, setUserName] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false); // State for settings dropdown
+  const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false); // State for settings dropdown
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
   // Get userId from localStorage
@@ -187,6 +187,12 @@ function Layout({ children }) {
                   className="block py-2 px-4 hover:bg-gray-600 rounded"
                 >
                   Notification Settings
+                </Link>
+                <Link
+                  href="/admin/export-tickets"
+                  className="block py-2 px-4 hover:bg-gray-600 rounded"
+                >
+                  Export Tickets
                 </Link>
               </div>
             )}

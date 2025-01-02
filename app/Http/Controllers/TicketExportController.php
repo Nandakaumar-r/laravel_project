@@ -6,14 +6,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class TicketExportController  extends Controller
+class TicketExportController extends Controller
 {
-    public function exportTickets()
+    public function exportTickets(Request $request)
     {
-        // Fetch data from the database
+        // Get the start and end date from the request
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        // Check if both dates are provided, if not, return an error response
+        if (!$startDate || !$endDate) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Both start date and end date are required.',
+            ], 400);
+        }
+
+        // Fetch data from the database within the provided date range
         $tickets = DB::table('hesk_tickets')
             ->join('hesk_categories', 'hesk_tickets.category', '=', 'hesk_categories.id')
             ->join('hesk_users', 'hesk_tickets.owner', '=', 'hesk_users.id')
+            ->whereBetween('hesk_tickets.dt', [$startDate, $endDate]) // Filter by date range
             ->select(
                 'hesk_tickets.id',
                 'hesk_tickets.trackid',
@@ -31,7 +44,15 @@ class TicketExportController  extends Controller
                 'hesk_tickets.due_date'
             )
             ->get();
+                    
 
+        // Check if there are no tickets for the selected date range
+        if ($tickets->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No records found for the selected date range.',
+            ], 404);
+        }
         // Define CSV headers
         $csvData = [
             ['ID', 'Track ID', 'Date', 'Last Update', 'Name', 'Email', 'Category', 'Priority', 'Status', 'Subject', 'Message', 'Owner', 'Time Worked', 'Due Date']
@@ -73,11 +94,14 @@ class TicketExportController  extends Controller
 
     private function getPriorityName($priority)
     {
+        // Convert the priority to an integer
+        $priority = (int) $priority;
         return match ($priority) {
-            0 => 'Critical',
+            0 => 'Low',
             1 => 'High',
             2 => 'Medium',
-            default => 'Low',
+            3 => 'Critical',
+            default => 'Unknown',
         };
     }
 
